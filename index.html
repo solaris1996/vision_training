@@ -54,6 +54,7 @@
   <form class="form-inline justify-content-center">
     <div class="form-group mb-2">
       <input type="text" class="form-control" id="interval" placeholder="interval" value="1000">
+      <input type="hidden" id="repeat" value="20">
     </div>
     &nbsp;
     <button type="button" class="btn btn-primary mb-2" id="auto-button">Auto</button>
@@ -78,7 +79,13 @@
   $(function () {
     var MAX = 30;
 
-    function change() {
+    function change(count) {
+      if (count && ++counter > repeat) {
+        $('#number-badge').text('終');
+        $('#number-badge').css('background', 'silver');
+        clearInterval(timer);
+        return;
+      }
       var number = Math.floor(Math.random() * MAX) + 1;
       var color = '';
       if (number < 7) {
@@ -97,15 +104,18 @@
     }
 
     $('#container').click(function () {
-      change();
+      change(false);
     });
 
     var timer;
+    var repeat = 0;
+    var counter = 0;
 
     $('#auto-button').click(function () {
       clearInterval(timer);
-      var inetval = Number($('#interval').val());
-      timer = setInterval(change, inetval);
+      repeat = Number($('#repeat').val());
+      var interval = Number($('#interval').val());
+      timer = setInterval(function (){change(true)}, interval);
     });
 
     $('#stop-button').click(function () {
