@@ -113,6 +113,7 @@
 
     $('#auto-button').click(function () {
       clearInterval(timer);
+      counter = 0;
       repeat = Number($('#repeat').val());
       var interval = Number($('#interval').val());
       timer = setInterval(function (){change(true)}, interval);
