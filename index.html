@@ -116,6 +116,7 @@
       counter = 0;
       repeat = Number($('#repeat').val());
       var interval = Number($('#interval').val());
+      change(true);
       timer = setInterval(function (){change(true)}, interval);
     });
 
