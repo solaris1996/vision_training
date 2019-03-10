@@ -81,6 +81,7 @@
   $(function () {
     var MAX = 30;
     var audio = new Array(MAX);
+    var finish = new Audio('finish.wav');
 
     for (var i = 0; i < MAX; i++) {
       audio[i] = new Audio('num' + ('00' + (i + 1)).slice(-3) + '_01.wav');
@@ -91,6 +92,7 @@
         $('#number-badge').text('終');
         $('#number-badge').css('background', 'silver');
         clearInterval(timer);
+        finish.play();
         return;
       }
       var number = Math.floor(Math.random() * MAX) + 1;
