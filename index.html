@@ -10,6 +10,11 @@
         integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 
   <title>Vision Training</title>
+  <!--
+  http://www14.big.or.jp/~amiami/happy/voice/num_01.html
+  http://phiary.me/webaudio-api-getting-started/
+  -->
+
   <style>
     #container {
       margin-top: 20px;
@@ -34,9 +39,6 @@
 
     #interval {
       width: 80px;
-    }
-    #auto-button {
-      display: inline-block;
     }
   </style>
 </head>
@@ -78,6 +80,11 @@
 <script>
   $(function () {
     var MAX = 30;
+    var audio = new Array(MAX);
+
+    for (var i = 0; i < MAX; i++) {
+      audio[i] = new Audio('num' + ('00' + (i + 1)).slice(-3) + '_01.wav');
+    }
 
     function change(count) {
       if (count && ++counter > repeat) {
@@ -101,6 +108,7 @@
       }
       $('#number-badge').text(number);
       $('#number-badge').css('background', color);
+      audio[number - 1].play();
     }
 
     $('#container').click(function () {
