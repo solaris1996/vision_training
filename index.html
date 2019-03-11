@@ -120,14 +120,14 @@
       numberVoices[number - 1].play();
     }
 
-    function stop(message) {
+    function stop(message, voice) {
       clearInterval(timer);
       console.log('clearInterval(timer)');
-      if (arguments.length > 0) {
+      numberBadge.text(message);
+      numberBadge.css('background', 'silver');
+      if (voice) {
         finishVoice.play();
         console.log('finishVoice.play()');
-        numberBadge.text(message);
-        numberBadge.css('background', 'silver');
       }
     }
 
@@ -136,8 +136,7 @@
     });
 
     $('#auto-button').click(function () {
-      numberBadge.text('始');
-      numberBadge.css('background', 'silver');
+      stop('始', false);
 
       var interval = $('input[name=interval-options]:checked').val();
       if (interval === 'input') {
@@ -155,10 +154,11 @@
       var counter = 0;
       setTimeout(function () {
         counter++;
+        console.log('counter: ' + counter);
         change();
         timer = setInterval(function () {
           if (repeat > 0 && ++counter > repeat) {
-            stop('終');
+            stop('終', true);
             return;
           }
           console.log('counter: ' + counter);
@@ -168,7 +168,7 @@
     });
 
     $('#stop-button').click(function () {
-      stop('終');
+      stop('終', true);
     });
 
     $('#interval').focus(function() {
