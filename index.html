@@ -44,7 +44,7 @@
 <div class="container text-center" id="container">
 
   <div id="number-badge">
-    休
+    ？
   </div>
 
 </div>
@@ -136,7 +136,9 @@
     });
 
     $('#auto-button').click(function () {
-      stop('始');
+      numberBadge.text('始');
+      numberBadge.css('background', 'silver');
+
       var interval = $('input[name=interval-options]:checked').val();
       if (interval === 'input') {
         interval = Number($('#interval').val());
@@ -151,18 +153,27 @@
       startVoice.play();
       console.log('startVoice.play()');
       var counter = 0;
-      timer = setInterval(function (){
-        if (repeat > 0 && ++counter > repeat) {
-          stop('終');
-          return;
-        }
-        console.log('counter: ' + counter);
+      setTimeout(function () {
+        counter++;
         change();
-      }, interval);
+        timer = setInterval(function () {
+          if (repeat > 0 && ++counter > repeat) {
+            stop('終');
+            return;
+          }
+          console.log('counter: ' + counter);
+          change();
+        }, interval);
+      }, 2400);
     });
 
     $('#stop-button').click(function () {
       stop('終');
+    });
+
+    $('#interval').focus(function() {
+      console.log('#interval focused');
+      $('input[name=interval-options]').val(['input']);
     });
   });
 </script>
