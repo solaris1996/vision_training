@@ -34,7 +34,8 @@
     }
 
     #interval {
-      width: 60px;
+      display: inline-block;
+      width: 70px;
     }
   </style>
 </head>
@@ -136,11 +137,11 @@
 
     $('#auto-button').click(function () {
       stop('始');
-      var interval = 0;
-      if ($('input[name=interval-options]:checked').val() === 'input') {
+      var interval = $('input[name=interval-options]:checked').val();
+      if (interval === 'input') {
         interval = Number($('#interval').val());
       } else {
-        interval = Number($('input[name=interval-options]:checked').val());
+        interval = Number(interval);
       }
       var repeat = Number($('#repeat').val());
 
