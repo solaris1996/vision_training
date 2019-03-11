@@ -10,10 +10,6 @@
         integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 
   <title>Vision Training</title>
-  <!--
-  http://www14.big.or.jp/~amiami/happy/voice/num_01.html
-  http://phiary.me/webaudio-api-getting-started/
-  -->
 
   <style>
     #container {
@@ -38,7 +34,7 @@
     }
 
     #interval {
-      width: 80px;
+      width: 60px;
     }
   </style>
 </head>
@@ -47,6 +43,7 @@
 <div class="container text-center" id="container">
 
   <div id="number-badge">
+    休
   </div>
 
 </div>
@@ -55,8 +52,22 @@
 
   <form class="form-inline justify-content-center">
     <div class="form-group mb-2">
+      <label><input type="radio" name="interval-options" value="1000">1秒</label>&nbsp;
+      <label><input type="radio" name="interval-options" value="2000">2秒</label>&nbsp;
+      <label><input type="radio" name="interval-options" value="3000" checked>3秒</label>&nbsp;
+      <input type="radio" name="interval-options" value="input">
       <input type="text" class="form-control" id="interval" placeholder="interval" value="3000">
-      <input type="hidden" id="repeat" value="20">
+    </div>
+  </form>
+
+  <form class="form-inline justify-content-center">
+    <div class="form-group mb-2">
+      <select id="repeat">
+        <option value="10">10回</option>
+        <option value="20" selected>20回</option>
+        <option value="30">30回</option>
+        <option value="0">無限</option>
+      </select>
     </div>
     &nbsp;
     <button type="button" class="btn btn-primary mb-2" id="auto-button">Auto</button>
@@ -79,23 +90,18 @@
         crossorigin="anonymous"></script>
 <script>
   $(function () {
-    var MAX = 30;
-    var audio = new Array(MAX);
-    var finish = new Audio('finish.wav');
+    var timer;
+    var startVoice = new Audio('./voices/start.wav');
+    var finishVoice = new Audio('./voices/finish.wav');
+    var numberVoices = new Array(30);
+    var numberBadge = $('#number-badge');
 
-    for (var i = 0; i < MAX; i++) {
-      audio[i] = new Audio('num' + ('00' + (i + 1)).slice(-3) + '_01.wav');
+    for (var i = 0; i < numberVoices.length; i++) {
+      numberVoices[i] = new Audio('./voices/num' + ('00' + (i + 1)).slice(-3) + '_01.wav');
     }
 
-    function change(count) {
-      if (count && ++counter > repeat) {
-        $('#number-badge').text('終');
-        $('#number-badge').css('background', 'silver');
-        clearInterval(timer);
-        finish.play();
-        return;
-      }
-      var number = Math.floor(Math.random() * MAX) + 1;
+    function change() {
+      var number = Math.floor(Math.random() * numberVoices.length) + 1;
       var color = '';
       if (number < 7) {
         color = 'cyan';
@@ -108,32 +114,55 @@
       } else {
         color = 'magenta';
       }
-      $('#number-badge').text(number);
-      $('#number-badge').css('background', color);
-      audio[number - 1].play();
+      numberBadge.text(number);
+      numberBadge.css('background', color);
+      numberVoices[number - 1].play();
+    }
+
+    function stop(message) {
+      clearInterval(timer);
+      console.log('clearInterval(timer)');
+      if (arguments.length > 0) {
+        finishVoice.play();
+        console.log('finishVoice.play()');
+        numberBadge.text(message);
+        numberBadge.css('background', 'silver');
+      }
     }
 
     $('#container').click(function () {
-      change(false);
+      change();
     });
 
-    var timer;
-    var repeat = 0;
-    var counter = 0;
-
     $('#auto-button').click(function () {
-      clearInterval(timer);
-      counter = 0;
-      repeat = Number($('#repeat').val());
-      var interval = Number($('#interval').val());
-      change(true);
-      timer = setInterval(function (){change(true)}, interval);
+      stop('始');
+      var interval = 0;
+      if ($('input[name=interval-options]:checked').val() === 'input') {
+        interval = Number($('#interval').val());
+      } else {
+        interval = Number($('input[name=interval-options]:checked').val());
+      }
+      var repeat = Number($('#repeat').val());
+
+      console.log('interval: ' + interval);
+      console.log('repeat: ' + repeat);
+
+      startVoice.play();
+      console.log('startVoice.play()');
+      var counter = 0;
+      timer = setInterval(function (){
+        if (repeat > 0 && ++counter > repeat) {
+          stop('終');
+          return;
+        }
+        console.log('counter: ' + counter);
+        change();
+      }, interval);
     });
 
     $('#stop-button').click(function () {
-      clearInterval(timer);
+      stop('終');
     });
-
   });
 </script>
 </body>
